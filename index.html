@@ -29,61 +29,108 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;}
-    body{background:var(--black);color:var(--white);font-family:var(--font-b);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+    body{background:var(--black);color:var(--white);font-family:var(--font-b);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
     img{display:block;max-width:100%;}
     a{color:inherit;text-decoration:none;}
     button{font-family:inherit;cursor:pointer;}
+
+    /* ── scroll progress ── */
+    #progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--gold);z-index:200;transition:width .1s linear;width:0%;}
 
     /* ── helpers ── */
     .wrap{max-width:var(--mw);margin:0 auto;padding:0 var(--px);}
     .sec{padding:96px 0;}
     .eyebrow{font-family:var(--font-b);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-    .rule{width:36px;height:2px;background:var(--gold);margin-bottom:22px;}
+    .rule{width:36px;height:2px;background:var(--gold);margin-bottom:22px;transition:width .6s var(--ease);}
+    .rule.visible{width:36px;}
     .sec-title{font-family:var(--font-d);font-size:clamp(40px,5.5vw,72px);letter-spacing:.02em;line-height:1;color:var(--white);margin-bottom:14px;}
     .sec-sub{font-size:17px;color:var(--gray);line-height:1.65;max-width:500px;}
-    .btn{display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-b);font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:13px 28px;border:none;border-radius:6px;transition:background .2s var(--ease),color .2s,transform .15s,border-color .2s;}
-    .btn:hover{transform:translateY(-1px);}
-    .btn:active{transform:scale(.98);}
+    .btn{display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-b);font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:13px 28px;border:none;border-radius:6px;transition:background .2s var(--ease),color .2s,transform .2s,border-color .2s,box-shadow .2s;}
+    .btn:hover{transform:translateY(-2px);}
+    .btn:active{transform:scale(.97);}
     .btn-gold{background:var(--gold);color:var(--black);}
-    .btn-gold:hover{background:var(--gold-lt);}
+    .btn-gold:hover{background:var(--gold-lt);box-shadow:0 8px 24px rgba(201,165,82,.3);}
     .btn-ghost{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.28);}
     .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
 
+    /* ── reveal animations ── */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+    .reveal.visible{opacity:1;transform:none;}
+    .reveal[data-d="1"]{transition-delay:.08s;}
+    .reveal[data-d="2"]{transition-delay:.16s;}
+    .reveal[data-d="3"]{transition-delay:.24s;}
+    .reveal[data-d="4"]{transition-delay:.32s;}
+    .reveal[data-d="5"]{transition-delay:.40s;}
+    .reveal[data-d="6"]{transition-delay:.48s;}
+    .reveal-left{opacity:0;transform:translateX(-32px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+    .reveal-left.visible{opacity:1;transform:none;}
+    .reveal-right{opacity:0;transform:translateX(32px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+    .reveal-right.visible{opacity:1;transform:none;}
+
     /* ── nav ── */
     #nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,border-color .3s;border-bottom:1px solid transparent;}
-    #nav.on{background:rgba(13,13,13,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--border);}
+    #nav.on{background:rgba(13,13,13,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:var(--border);}
     .nav-i{max-width:var(--mw);margin:0 auto;padding:0 var(--px);height:70px;display:flex;align-items:center;gap:32px;}
-    .nav-logo img{height:36px;width:auto;}
+    .nav-logo img{height:36px;width:auto;transition:opacity .2s;}
+    .nav-logo:hover img{opacity:.8;}
     .nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;}
-    .nav-links a{font-size:13px;font-weight:500;letter-spacing:.05em;color:rgba(255,255,255,.65);transition:color .2s;}
-    .nav-links a:hover{color:var(--white);}
+    .nav-links a:not(.btn){font-size:13px;font-weight:500;letter-spacing:.05em;color:rgba(255,255,255,.6);transition:color .2s;position:relative;}
+    .nav-links a:not(.btn)::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .25s var(--ease);}
+    .nav-links a:not(.btn):hover{color:var(--white);}
+    .nav-links a:not(.btn):hover::after{width:100%;}
+
+    /* ── mobile nav ── */
+    .nav-ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;margin-left:auto;}
+    .nav-ham span{display:block;width:22px;height:2px;background:var(--white);border-radius:1px;transition:transform .3s var(--ease),opacity .3s;}
+    .nav-ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-ham.open span:nth-child(2){opacity:0;}
+    .nav-ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .nav-mobile{display:none;flex-direction:column;background:rgba(13,13,13,.98);border-top:1px solid var(--border);padding:8px var(--px) 24px;}
+    .nav-mobile.open{display:flex;}
+    .nav-mobile a{font-size:15px;font-weight:500;color:rgba(255,255,255,.7);padding:14px 0;border-bottom:1px solid var(--border);transition:color .2s;}
+    .nav-mobile a:last-child{border-bottom:none;padding-top:20px;}
+    .nav-mobile a:hover{color:var(--white);}
 
     /* ── hero ── */
     .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
-    .hero-bg{position:absolute;inset:0;background:url('https://framerusercontent.com/images/GSjx1lFWUerhJ2jmjWqc4oJDs.jpg') center/cover no-repeat;}
-    .hero-ov{position:absolute;inset:0;background:linear-gradient(100deg,rgba(13,13,13,.88) 38%,rgba(13,13,13,.35) 100%),linear-gradient(to top,rgba(13,13,13,.6) 0%,transparent 55%);}
+    .hero-bg{position:absolute;inset:0;background:url('https://framerusercontent.com/images/GSjx1lFWUerhJ2jmjWqc4oJDs.jpg') center/cover no-repeat;will-change:transform;}
+    .hero-ov{position:absolute;inset:0;background:linear-gradient(100deg,rgba(13,13,13,.9) 38%,rgba(13,13,13,.4) 100%),linear-gradient(to top,rgba(13,13,13,.65) 0%,transparent 55%);}
     .hero-c{position:relative;z-index:2;max-width:var(--mw);margin:0 auto;padding:160px var(--px) 100px;}
-    .hero-title{font-family:var(--font-d);font-size:clamp(68px,10vw,140px);line-height:.93;letter-spacing:.02em;color:var(--white);margin-bottom:26px;max-width:720px;}
-    .hero-sub{font-size:18px;color:rgba(255,255,255,.72);max-width:440px;line-height:1.65;margin-bottom:40px;}
-    .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+    .hero-eyebrow{animation:fadeUp .8s var(--ease) both;}
+    .hero-title{font-family:var(--font-d);font-size:clamp(60px,10vw,140px);line-height:.93;letter-spacing:.02em;color:var(--white);margin-bottom:26px;max-width:720px;animation:fadeUp .9s .1s var(--ease) both;}
+    .hero-sub{font-size:18px;color:rgba(255,255,255,.72);max-width:440px;line-height:1.65;margin-bottom:40px;animation:fadeUp .9s .22s var(--ease) both;}
+    .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;animation:fadeUp .9s .34s var(--ease) both;}
+    .hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeIn 1s .8s var(--ease) both;}
+    .hero-scroll span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+    .hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite;}
 
-    /* ── trusted ── */
+    /* ── trusted / marquee ── */
     .trusted{background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 0;}
     .trusted-lbl{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);text-align:center;margin-bottom:28px;}
-    .trusted-logos{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;}
-    .trusted-logos img{height:30px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.25;}
+    .trusted-overflow{overflow:hidden;position:relative;}
+    .trusted-overflow::before,.trusted-overflow::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;}
+    .trusted-overflow::before{left:0;background:linear-gradient(to right,var(--dark),transparent);}
+    .trusted-overflow::after{right:0;background:linear-gradient(to left,var(--dark),transparent);}
+    .trusted-track{display:flex;align-items:center;gap:56px;width:max-content;animation:marquee 22s linear infinite;}
+    .trusted-track:hover{animation-play-state:paused;}
+    .trusted-track img{height:28px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.22;transition:opacity .3s;}
+    .trusted-track img:hover{opacity:.55;}
 
     /* ── features ── */
     .features{background:var(--black);}
     .feat-hd{margin-bottom:60px;}
     .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 var(--px);max-width:var(--mw);margin:0 auto;}
-    .feat-card{position:relative;overflow:hidden;aspect-ratio:16/10;border-radius:8px;}
-    .feat-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease);}
-    .feat-card:hover img{transform:scale(1.04);}
-    .feat-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,.92) 0%,transparent 60%);padding:32px;display:flex;flex-direction:column;justify-content:flex-end;}
-    .feat-title{font-family:var(--font-h);font-size:20px;font-weight:700;letter-spacing:.02em;color:var(--white);margin-bottom:8px;}
-    .feat-desc{font-size:14px;color:rgba(255,255,255,.65);line-height:1.55;}
-    .feat-plain{background:var(--dark2);display:flex;align-items:center;padding:48px 40px;}
+    .feat-card{position:relative;overflow:hidden;aspect-ratio:16/10;border-radius:8px;cursor:pointer;}
+    .feat-card img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease);}
+    .feat-card:hover img{transform:scale(1.06);}
+    .feat-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,.95) 0%,rgba(13,13,13,.1) 60%);padding:32px;display:flex;flex-direction:column;justify-content:flex-end;transition:background .4s;}
+    .feat-card:hover .feat-ov{background:linear-gradient(to top,rgba(13,13,13,.98) 0%,rgba(13,13,13,.2) 60%);}
+    .feat-title{font-family:var(--font-h);font-size:20px;font-weight:700;letter-spacing:.02em;color:var(--white);margin-bottom:8px;transform:translateY(4px);transition:transform .4s var(--ease);}
+    .feat-card:hover .feat-title{transform:translateY(0);}
+    .feat-desc{font-size:14px;color:rgba(255,255,255,.65);line-height:1.55;opacity:.8;transition:opacity .4s;}
+    .feat-card:hover .feat-desc{opacity:1;}
+    .feat-plain{background:var(--dark2);display:flex;align-items:center;padding:48px 40px;transition:background .3s;}
+    .feat-plain:hover{background:#222;}
     .feat-plain-inner .feat-title{font-size:26px;margin-bottom:14px;}
     .feat-plain-inner .feat-desc{font-size:16px;color:var(--gray);}
 
@@ -94,10 +141,11 @@
     .tab-btn{font-family:var(--font-b);font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--gray);padding:16px 22px;background:transparent;border:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;}
     .tab-btn:hover:not(.active){color:var(--white);}
     .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
-    .tab-pane{display:none;}
+    .tab-pane{display:none;animation:tabFade .4s var(--ease);}
     .tab-pane.active{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
     .tab-img{overflow:hidden;border:1px solid var(--gborder);border-radius:8px;}
-    .tab-img img{width:100%;height:460px;object-fit:cover;object-position:top;}
+    .tab-img img{width:100%;height:460px;object-fit:cover;object-position:top;transition:transform .6s var(--ease);}
+    .tab-img:hover img{transform:scale(1.03);}
     .tab-txt h3{font-family:var(--font-d);font-size:clamp(36px,4vw,52px);letter-spacing:.02em;color:var(--white);margin-bottom:18px;}
     .tab-txt p{font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:16px;}
     .tab-txt ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:4px;}
@@ -107,8 +155,10 @@
     /* ── process ── */
     .process{background:var(--black);}
     .proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:60px;}
-    .proc-step{background:var(--black);padding:40px 36px;border-radius:6px;}
-    .step-n{font-family:var(--font-d);font-size:52px;color:rgba(201,165,82,.12);line-height:1;margin-bottom:18px;}
+    .proc-step{background:var(--dark2);padding:40px 36px;border-radius:8px;border:1px solid transparent;transition:border-color .3s,transform .3s var(--ease);}
+    .proc-step:hover{border-color:var(--gborder);transform:translateY(-4px);}
+    .step-n{font-family:var(--font-d);font-size:52px;color:rgba(201,165,82,.14);line-height:1;margin-bottom:18px;transition:color .3s;}
+    .proc-step:hover .step-n{color:rgba(201,165,82,.28);}
     .step-t{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--white);margin-bottom:10px;}
     .step-d{font-size:14px;color:var(--gray);line-height:1.65;}
 
@@ -122,10 +172,10 @@
     .testimonials{background:var(--black);}
     .test-hd{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:44px;}
     .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-    .test-card{background:var(--dark2);border:1px solid var(--border);padding:28px;transition:border-color .2s;border-radius:8px;}
-    .test-card:hover{border-color:var(--gborder);}
+    .test-card{background:var(--dark2);border:1px solid var(--border);padding:28px;transition:border-color .3s,transform .3s var(--ease),box-shadow .3s;border-radius:8px;}
+    .test-card:hover{border-color:var(--gborder);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
     .test-q{font-size:15px;color:rgba(255,255,255,.82);line-height:1.65;margin-bottom:22px;}
-    .test-q::before{content:'\201C';color:var(--gold);margin-right:1px;}
+    .test-q::before{content:'\201C';color:var(--gold);margin-right:1px;font-size:18px;}
     .test-author{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);padding-top:18px;}
     .test-av{width:38px;height:38px;border-radius:50%;background:var(--dark);overflow:hidden;flex-shrink:0;}
     .test-av img{width:100%;height:100%;object-fit:cover;}
@@ -139,13 +189,15 @@
     .ptlbl.on{color:var(--white);font-weight:600;}
     .sw{position:relative;width:46px;height:25px;background:var(--dark2);border:1px solid var(--border);border-radius:100px;cursor:pointer;transition:background .2s,border-color .2s;}
     .sw.on{background:var(--gold);border-color:var(--gold);}
-    .sw-h{position:absolute;top:3px;left:3px;width:17px;height:17px;background:var(--white);border-radius:50%;transition:transform .2s var(--ease);}
+    .sw-h{position:absolute;top:3px;left:3px;width:17px;height:17px;background:var(--white);border-radius:50%;transition:transform .25s var(--ease);}
     .sw.on .sw-h{transform:translateX(21px);}
     .save-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:3px 8px;border-radius:2px;}
-    .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:transparent;}
-    .pc{background:var(--dark2);padding:32px 24px;position:relative;border-radius:8px;}
-    .pc.pop{background:#111;border:1px solid var(--gold);margin:-1px;z-index:1;border-radius:8px;}
-    .pop-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:4px 10px;margin-bottom:18px;}
+    .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    .pc{background:var(--dark2);padding:32px 24px;position:relative;border-radius:8px;border:1px solid transparent;transition:border-color .3s,transform .3s var(--ease),box-shadow .3s;}
+    .pc:hover{border-color:var(--border);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+    .pc.pop{background:#111;border:1px solid var(--gold);z-index:1;}
+    .pc.pop:hover{box-shadow:0 12px 40px rgba(201,165,82,.18);}
+    .pop-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:4px 10px;margin-bottom:18px;border-radius:2px;}
     .pc-plan{font-family:var(--font-h);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:14px;}
     .pc-amt{font-family:var(--font-d);font-size:58px;letter-spacing:-.01em;color:var(--white);line-height:1;}
     .pc-amt sup{font-family:var(--font-b);font-size:20px;font-weight:500;vertical-align:top;margin-top:8px;display:inline-block;}
@@ -163,12 +215,15 @@
     .faq-list{margin-top:44px;}
     .faq-item{border-top:1px solid var(--border);}
     .faq-item:last-child{border-bottom:1px solid var(--border);}
-    .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;background:transparent;border:none;text-align:left;}
-    .faq-qt{font-family:var(--font-h);font-size:18px;font-weight:600;letter-spacing:.01em;color:var(--white);}
-    .faq-ic{flex-shrink:0;width:24px;height:24px;border:1px solid var(--gborder);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;line-height:1;transition:transform .3s var(--ease);}
-    .faq-item.open .faq-ic{transform:rotate(45deg);}
-    .faq-a{display:none;font-size:15px;color:var(--gray);line-height:1.7;padding-bottom:22px;max-width:680px;}
-    .faq-item.open .faq-a{display:block;}
+    .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;background:transparent;border:none;text-align:left;cursor:pointer;}
+    .faq-qt{font-family:var(--font-h);font-size:18px;font-weight:600;letter-spacing:.01em;color:var(--white);transition:color .2s;}
+    .faq-item:hover .faq-qt{color:var(--gold);}
+    .faq-ic{flex-shrink:0;width:24px;height:24px;border:1px solid var(--gborder);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;line-height:1;transition:transform .35s var(--ease),background .2s;}
+    .faq-item.open .faq-ic{transform:rotate(45deg);background:var(--gold-bg);}
+    .faq-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease);}
+    .faq-item.open .faq-body{grid-template-rows:1fr;}
+    .faq-body-inner{overflow:hidden;}
+    .faq-a{font-size:15px;color:var(--gray);line-height:1.7;padding-bottom:22px;max-width:680px;}
 
     /* ── final cta ── */
     .final-cta{position:relative;padding:120px 0;text-align:center;overflow:hidden;}
@@ -193,15 +248,55 @@
     .ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:28px;flex-wrap:wrap;gap:12px;}
     .ft-copy,.ft-credit{font-size:12px;color:rgba(255,255,255,.28);}
     .ft-credit a{color:var(--gold);}
+
+    /* ── keyframes ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+    @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    @keyframes tabFade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    @keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.1);}}
+
+    /* ── responsive ── */
+    @media (max-width: 960px) {
+      .nav-links{display:none;}
+      .nav-ham{display:flex;}
+      .feat-grid{grid-template-columns:1fr;}
+      .feat-card{aspect-ratio:16/9;}
+      .price-grid{grid-template-columns:repeat(2,1fr);}
+      .proc-grid{grid-template-columns:repeat(2,1fr);}
+      .test-grid{grid-template-columns:repeat(2,1fr);}
+      .tab-pane.active{grid-template-columns:1fr;gap:32px;}
+      .tab-img img{height:320px;}
+      .ft-top{grid-template-columns:1fr 1fr;}
+      .mid-cta-i{grid-template-columns:1fr;text-align:center;justify-items:center;}
+    }
+
+    @media (max-width: 600px) {
+      .sec{padding:64px 0;}
+      .hero-c{padding:130px var(--px) 80px;}
+      .price-grid{grid-template-columns:1fr;}
+      .proc-grid{grid-template-columns:1fr;}
+      .test-grid{grid-template-columns:1fr;}
+      .ft-top{grid-template-columns:1fr;}
+      .hero-scroll{display:none;}
+      .pc.pop{margin:0;}
+    }
+
+    @media (max-width: 400px) {
+      .hero-cta{flex-direction:column;align-items:flex-start;}
+      .hero-cta .btn{width:100%;text-align:center;}
+    }
   </style>
 </head>
 <body>
+
+<div id="progress-bar"></div>
 
 <!-- ═══ NAV ═══ -->
 <nav id="nav">
   <div class="nav-i">
     <a href="#" class="nav-logo">
-      <img src="uploads/updated%20logo%20white%20.png" alt="Next Level Performance S&amp;C">
+      <img src="uploads/updated%20logo.png" alt="Next Level Performance S&amp;C">
     </a>
     <div class="nav-links">
       <a href="#features">Features</a>
@@ -211,15 +306,26 @@
       <a href="#faq">FAQ</a>
       <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Get started</a>
     </div>
+    <button class="nav-ham" id="nav-ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="#features" class="nav-mob-link">Features</a>
+    <a href="#whyus" class="nav-mob-link">Why Us</a>
+    <a href="#testimonials" class="nav-mob-link">Testimonials</a>
+    <a href="#plans" class="nav-mob-link">Plans</a>
+    <a href="#faq" class="nav-mob-link">FAQ</a>
+    <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Get started</a>
   </div>
 </nav>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg" id="hero-bg"></div>
   <div class="hero-ov"></div>
   <div class="hero-c">
-    <p class="eyebrow">Perth, WA &mdash; Strength &amp; Conditioning</p>
+    <p class="eyebrow hero-eyebrow">Perth, WA &mdash; Strength &amp; Conditioning</p>
     <h1 class="hero-title">Where Future Champions Train</h1>
     <p class="hero-sub">Build the strength, speed and skills that separate good athletes from great ones.</p>
     <div class="hero-cta">
@@ -227,19 +333,32 @@
       <a href="#features" class="btn btn-ghost">Learn More</a>
     </div>
   </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
 </section>
 
 <!-- ═══ TRUSTED BY ═══ -->
 <div class="trusted">
   <div class="wrap">
-    <p class="trusted-lbl">Trusted by teams and athletes using tools trusted by the professionals</p>
-    <div class="trusted-logos">
-      <img src="https://framerusercontent.com/images/BEj7pIcRPaVJAPe9154X8ye7p0.jpeg" alt="Partner" loading="lazy">
-      <img src="https://framerusercontent.com/images/Z03K4xHMLve2mzBGCYlnqQKY6c.png" alt="Partner" loading="lazy">
-      <img src="https://framerusercontent.com/images/fSBDBwKZWyvHnYGcKrLLQukCr1Q.png" alt="Partner" loading="lazy">
-      <img src="https://framerusercontent.com/images/sICGVRYicj2GSIkgCe23qTTDQw.webp" alt="Partner" loading="lazy">
-      <img src="https://framerusercontent.com/images/JGrHPC1byBUjNLa5XPs573xGDIU.png" alt="Partner" loading="lazy">
-      <img src="https://framerusercontent.com/images/nnrkAMADgyzokFRFGcvZKy88aJg.jpg" alt="Partner" loading="lazy">
+    <p class="trusted-lbl reveal">Trusted by teams and athletes using tools trusted by the professionals</p>
+  </div>
+  <div class="trusted-overflow">
+    <div class="trusted-track" id="trusted-track">
+      <img src="https://framerusercontent.com/images/BEj7pIcRPaVJAPe9154X8ye7p0.jpeg" alt="Partner">
+      <img src="https://framerusercontent.com/images/Z03K4xHMLve2mzBGCYlnqQKY6c.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/fSBDBwKZWyvHnYGcKrLLQukCr1Q.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/sICGVRYicj2GSIkgCe23qTTDQw.webp" alt="Partner">
+      <img src="https://framerusercontent.com/images/JGrHPC1byBUjNLa5XPs573xGDIU.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/nnrkAMADgyzokFRFGcvZKy88aJg.jpg" alt="Partner">
+      <!-- duplicated for seamless loop -->
+      <img src="https://framerusercontent.com/images/BEj7pIcRPaVJAPe9154X8ye7p0.jpeg" alt="Partner">
+      <img src="https://framerusercontent.com/images/Z03K4xHMLve2mzBGCYlnqQKY6c.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/fSBDBwKZWyvHnYGcKrLLQukCr1Q.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/sICGVRYicj2GSIkgCe23qTTDQw.webp" alt="Partner">
+      <img src="https://framerusercontent.com/images/JGrHPC1byBUjNLa5XPs573xGDIU.png" alt="Partner">
+      <img src="https://framerusercontent.com/images/nnrkAMADgyzokFRFGcvZKy88aJg.jpg" alt="Partner">
     </div>
   </div>
 </div>
@@ -248,35 +367,35 @@
 <section class="sec features" id="features">
   <div class="wrap">
     <div class="feat-hd">
-      <p class="eyebrow">What Next Level Looks Like</p>
-      <div class="rule"></div>
-      <h2 class="sec-title">Strength &amp; conditioning, redefined.</h2>
-      <p class="sec-sub">Let&rsquo;s uncover what proper S&amp;C really means for your performance.</p>
+      <p class="eyebrow reveal">What Next Level Looks Like</p>
+      <div class="rule reveal"></div>
+      <h2 class="sec-title reveal">Strength &amp; conditioning, redefined.</h2>
+      <p class="sec-sub reveal">Let&rsquo;s uncover what proper S&amp;C really means for your performance.</p>
     </div>
   </div>
   <div class="feat-grid">
-    <div class="feat-card">
+    <div class="feat-card reveal">
       <img src="https://framerusercontent.com/images/oZYRUXbQaJdKmvB68iRREl6M9MU.jpg" alt="Quality Equipment &amp; Facility" loading="lazy">
       <div class="feat-ov">
         <h3 class="feat-title">Quality Equipment &amp; Facility</h3>
         <p class="feat-desc">Top-tier locally sourced plates, bars, specialty gear, and a dedicated recovery suite.</p>
       </div>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" data-d="1">
       <img src="https://framerusercontent.com/images/2C4DFAQv2j2VmbphQRF7fH4P0g.png" alt="Baseline Testing" loading="lazy">
       <div class="feat-ov">
         <h3 class="feat-title">Understanding Your Baselines &amp; Goals</h3>
         <p class="feat-desc">Specialised assessments using VALD ForceDecks establish exactly where you stand and where you&rsquo;re headed.</p>
       </div>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" data-d="2">
       <img src="https://framerusercontent.com/images/aRcc9XaEAgbj1TO3BocTaRlc.png" alt="Normative Data" loading="lazy">
       <div class="feat-ov">
         <h3 class="feat-title">Normative Data</h3>
         <p class="feat-desc">See exactly where you stand against the pros. Benchmarked data gives you a clear point of reference.</p>
       </div>
     </div>
-    <div class="feat-card feat-plain">
+    <div class="feat-card feat-plain reveal" data-d="3">
       <div class="feat-plain-inner">
         <h3 class="feat-title" style="font-size:26px;margin-bottom:14px;">Workouts Scheduled &amp; Tracked</h3>
         <p class="feat-desc" style="font-size:16px;color:var(--gray);">Using Teambuildr to program and track every session — making sure you&rsquo;re building on every rep, every week.</p>
@@ -288,11 +407,11 @@
 <!-- ═══ WHY US ═══ -->
 <section class="sec whyus" id="whyus">
   <div class="wrap">
-    <p class="eyebrow">What Makes Us Different</p>
-    <div class="rule"></div>
-    <h2 class="sec-title">People focus. Community drive.<br>Bigger ambitions.</h2>
+    <p class="eyebrow reveal">What Makes Us Different</p>
+    <div class="rule reveal"></div>
+    <h2 class="sec-title reveal">People focus. Community drive.<br>Bigger ambitions.</h2>
 
-    <div class="tabs" style="margin-top:40px;">
+    <div class="tabs reveal" style="margin-top:40px;">
       <button class="tab-btn active" data-tab="coaches">Your Coaches</button>
       <button class="tab-btn" data-tab="facility">Bayswater Facility</button>
       <button class="tab-btn" data-tab="recovery">Recovery Lounge</button>
@@ -388,37 +507,37 @@
 <!-- ═══ PROCESS ═══ -->
 <section class="sec process" id="process">
   <div class="wrap">
-    <p class="eyebrow">Our Process</p>
-    <div class="rule"></div>
-    <h2 class="sec-title">Every interaction matters.</h2>
-    <p class="sec-sub">A structured approach from day one through every season of your development.</p>
+    <p class="eyebrow reveal">Our Process</p>
+    <div class="rule reveal"></div>
+    <h2 class="sec-title reveal">Every interaction matters.</h2>
+    <p class="sec-sub reveal">A structured approach from day one through every season of your development.</p>
     <div class="proc-grid">
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="1">
         <div class="step-n">01</div>
         <div class="step-t">Initial Consultation</div>
         <p class="step-d">Connect with your dedicated S&amp;C coach to discuss your sporting background and performance goals.</p>
       </div>
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="2">
         <div class="step-n">02</div>
         <div class="step-t">Personalised Planning</div>
         <p class="step-d">We tailor your training approach based on your individual sporting needs and key development areas.</p>
       </div>
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="3">
         <div class="step-n">03</div>
         <div class="step-t">Performance Testing</div>
         <p class="step-d">Initial testing generates your athletic profile, identifying strengths and areas primed for improvement.</p>
       </div>
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="4">
         <div class="step-n">04</div>
         <div class="step-t">Track &amp; Strategise</div>
         <p class="step-d">Monitor progress and plan upcoming training phases. This is where accountability drives real results.</p>
       </div>
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="5">
         <div class="step-n">05</div>
         <div class="step-t">Regular Check-ins</div>
         <p class="step-d">Weekly or bi-weekly check-ins ensure your program stays relevant to your evolving goals and season demands.</p>
       </div>
-      <div class="proc-step">
+      <div class="proc-step reveal" data-d="6">
         <div class="step-n">06</div>
         <div class="step-t">Ongoing Support</div>
         <p class="step-d">This is a long-term journey. We support your development well beyond traditional S&amp;C — great athletes are built over time.</p>
@@ -430,11 +549,13 @@
 <!-- ═══ MID CTA ═══ -->
 <div class="mid-cta">
   <div class="wrap mid-cta-i">
-    <div>
+    <div class="reveal-left">
       <h3>Book your initial consult</h3>
       <p>See what it&rsquo;s all about. Schedule a session in person, no commitment required.</p>
     </div>
-    <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Book Consult</a>
+    <div class="reveal-right">
+      <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Book Consult</a>
+    </div>
   </div>
 </div>
 
@@ -443,63 +564,65 @@
   <div class="wrap">
     <div class="test-hd">
       <div>
-        <p class="eyebrow">What Our Athletes Are Saying</p>
-        <div class="rule"></div>
-        <h2 class="sec-title">Real results from real people.</h2>
+        <p class="eyebrow reveal">What Our Athletes Are Saying</p>
+        <div class="rule reveal"></div>
+        <h2 class="sec-title reveal">Real results from real people.</h2>
       </div>
-      <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-ghost" target="_blank" rel="noopener">Join others</a>
+      <div class="reveal">
+        <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-ghost" target="_blank" rel="noopener">Join others</a>
+      </div>
     </div>
     <div class="test-grid">
-      <div class="test-card">
+      <div class="test-card reveal" data-d="1">
         <p class="test-q">If you have sport specific training or just want to look after yourself they can do it all. Would 100% recommend!</p>
         <div class="test-author">
           <div class="test-av"><img src="https://framerusercontent.com/images/pdGRL8EFw5rXQbSGCkDxTwYAMFc.png" alt="" loading="lazy"></div>
           <div><div class="test-name">Nathan Pollitt</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="2">
         <p class="test-q">Excellent functional training. The S&amp;C coaches are very knowledgeable and are always helpful and supportive during sessions.</p>
         <div class="test-author">
           <div class="test-av"><img src="https://framerusercontent.com/images/So9uybqvsXMRrvkcnGFFAGBLRrg.jpg" alt="" loading="lazy"></div>
           <div><div class="test-name">Todd Nyawayi</div><div class="test-role">CUFC SL Men&rsquo;s First Team</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="3">
         <p class="test-q">Bayswater City FC U20s have been going down for their S&amp;C sessions this year. They&rsquo;ve really benefited — it&rsquo;s taken them to a whole new level in the game.</p>
         <div class="test-author">
           <div class="test-av"></div>
           <div><div class="test-name">Krishnakant Pratap</div><div class="test-role">Coach, Bayswater City FC</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="1">
         <p class="test-q">We joined to help with AFL performance — to get stronger and reduce the risk of injuries. They&rsquo;re great and make it fun.</p>
         <div class="test-author">
           <div class="test-av"></div>
           <div><div class="test-name">Natalia Vollrath-Hale</div><div class="test-role">Parent of upcoming athlete</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="2">
         <p class="test-q">I&rsquo;ve been working with Sutts and Ree for around 6 months now and haven&rsquo;t looked back. They tailor the program to your individual needs and adapt it as your lifestyle changes.</p>
         <div class="test-author">
           <div class="test-av"></div>
           <div><div class="test-name">Jacob Da Silva</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="3">
         <p class="test-q">My daughter has improved in all areas of her sports and was rehabilitated in a short space of time thanks to the dedication from Ree and Chris. 100% recommend.</p>
         <div class="test-author">
           <div class="test-av"></div>
           <div><div class="test-name">Lisa Black</div><div class="test-role">Parent of upcoming athlete</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="2">
         <p class="test-q">Since joining I&rsquo;ve seen positive progress with Touch Rugby and Netball, and a real increase in fitness and body strength.</p>
         <div class="test-author">
           <div class="test-av"><img src="https://framerusercontent.com/images/Og3yXCht9gXF42ehHMMYAACr4Q.jpeg" alt="" loading="lazy"></div>
           <div><div class="test-name">Mackenzie Baker</div><div class="test-role">Women&rsquo;s States Touch Rugby</div></div>
         </div>
       </div>
-      <div class="test-card">
+      <div class="test-card reveal" data-d="3">
         <p class="test-q">It&rsquo;s not easy to get a lot of ice time for curling, so off-ice prep has been essential in preparation for Australian Curling Nationals.</p>
         <div class="test-author">
           <div class="test-av"></div>
@@ -513,12 +636,12 @@
 <!-- ═══ PRICING ═══ -->
 <section class="sec pricing" id="plans">
   <div class="wrap">
-    <p class="eyebrow">Programs &amp; Pricing</p>
-    <div class="rule"></div>
-    <h2 class="sec-title">Designed for every athlete.</h2>
-    <p class="sec-sub">From developing athletes to professionals — a program that meets you where you are.</p>
+    <p class="eyebrow reveal">Programs &amp; Pricing</p>
+    <div class="rule reveal"></div>
+    <h2 class="sec-title reveal">Designed for every athlete.</h2>
+    <p class="sec-sub reveal">From developing athletes to professionals — a program that meets you where you are.</p>
 
-    <div class="price-toggle">
+    <div class="price-toggle reveal">
       <span class="ptlbl on" id="lbl-wk">Weekly</span>
       <div class="sw" id="billing-sw" role="button" aria-label="Toggle billing period"><div class="sw-h"></div></div>
       <span class="ptlbl" id="lbl-yr">Yearly</span>
@@ -526,8 +649,7 @@
     </div>
 
     <div class="price-grid" id="price-grid">
-      <!-- Online Coaching -->
-      <div class="pc">
+      <div class="pc reveal" data-d="1">
         <div class="pc-plan">Online Coaching</div>
         <div class="wk-price"><div class="pc-amt"><sup>$</sup>35</div><div class="pc-per">/week</div></div>
         <div class="yr-price"><div class="pc-amt"><sup>$</sup>30</div><div class="pc-per">/week, billed annually</div></div>
@@ -541,8 +663,7 @@
         </ul>
         <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-ghost" target="_blank" rel="noopener" style="width:100%;">Join Now</a>
       </div>
-      <!-- Foundation -->
-      <div class="pc">
+      <div class="pc reveal" data-d="2">
         <div class="pc-plan">Foundation</div>
         <div class="wk-price"><div class="pc-amt"><sup>$</sup>65</div><div class="pc-per">/week</div></div>
         <div class="yr-price"><div class="pc-amt"><sup>$</sup>55</div><div class="pc-per">/week, billed annually</div></div>
@@ -556,8 +677,7 @@
         </ul>
         <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-ghost" target="_blank" rel="noopener" style="width:100%;">Book Consult</a>
       </div>
-      <!-- Elevate (featured) -->
-      <div class="pc pop">
+      <div class="pc pop reveal" data-d="3">
         <div class="pop-badge">Most Popular</div>
         <div class="pc-plan">Elevate</div>
         <div class="wk-price"><div class="pc-amt"><sup>$</sup>75</div><div class="pc-per">/week</div></div>
@@ -573,8 +693,7 @@
         </ul>
         <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener" style="width:100%;">Book Consult</a>
       </div>
-      <!-- Peak Performance -->
-      <div class="pc">
+      <div class="pc reveal" data-d="4">
         <div class="pc-plan">Peak Performance</div>
         <div class="wk-price"><div class="pc-amt"><sup>$</sup>90</div><div class="pc-per">/week</div></div>
         <div class="yr-price"><div class="pc-amt"><sup>$</sup>77</div><div class="pc-per">/week, billed annually</div></div>
@@ -597,53 +716,53 @@
 <!-- ═══ FAQ ═══ -->
 <section class="sec faq" id="faq">
   <div class="wrap">
-    <p class="eyebrow">Frequently Asked Questions</p>
-    <div class="rule"></div>
-    <h2 class="sec-title">Everything you need to know.</h2>
-    <p class="sec-sub">Can&rsquo;t find what you&rsquo;re looking for? Reach out at <a href="mailto:ree@nlpsc.com" style="color:var(--gold)">ree@nlpsc.com</a></p>
+    <p class="eyebrow reveal">Frequently Asked Questions</p>
+    <div class="rule reveal"></div>
+    <h2 class="sec-title reveal">Everything you need to know.</h2>
+    <p class="sec-sub reveal">Can&rsquo;t find what you&rsquo;re looking for? Reach out at <a href="mailto:ree@nlpsc.com" style="color:var(--gold)">ree@nlpsc.com</a></p>
 
-    <div class="faq-list">
+    <div class="faq-list reveal">
       <div class="faq-item open">
         <button class="faq-q">
           <span class="faq-qt">Do I need to be an athlete to join?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">Not at all. While we work with competitive athletes, most of our members are everyday people wanting to get stronger, fitter, and move better. Our programs are scaled to your ability, whether you&rsquo;re brand new to training or an experienced athlete.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">Not at all. While we work with competitive athletes, most of our members are everyday people wanting to get stronger, fitter, and move better. Our programs are scaled to your ability, whether you&rsquo;re brand new to training or an experienced athlete.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">
           <span class="faq-qt">What makes your gym different from a regular commercial gym?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">We&rsquo;re not a commercial gym — we&rsquo;re a specialist strength and conditioning facility. Every member works with a qualified S&amp;C coach, follows an individualised program, and has their progress tracked and measured. You&rsquo;re never just another face on the floor. The equipment, the methodology, and the coaching are all built around one thing: athletic performance.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">We&rsquo;re not a commercial gym — we&rsquo;re a specialist strength and conditioning facility. Every member works with a qualified S&amp;C coach, follows an individualised program, and has their progress tracked and measured. You&rsquo;re never just another face on the floor.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">
           <span class="faq-qt">Do you offer trial sessions?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">Yes. We offer an initial consultation where you can see the facility, meet your coach, and discuss your goals — with no commitment required. Book yours through the link at the top of the page.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">Yes. We offer an initial consultation where you can see the facility, meet your coach, and discuss your goals — with no commitment required. Book yours through the link at the top of the page.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">
           <span class="faq-qt">How do memberships work?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">Memberships are available on a weekly or annual basis. Annual billing gives you a discounted rate. All memberships are managed through our booking platform and can be paused or cancelled with appropriate notice. Get in touch if you have specific questions about your situation.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">Memberships are available on a weekly or annual basis. Annual billing gives you a discounted rate. All memberships are managed through our booking platform and can be paused or cancelled with appropriate notice.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">
           <span class="faq-qt">What if I&rsquo;ve never lifted weights before?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">That&rsquo;s exactly where our Foundation program starts. Your coach will guide you through fundamental movement patterns, build confidence under load, and set the groundwork for long-term progress. Starting from zero is never a problem — it&rsquo;s actually a great place to build from.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">That&rsquo;s exactly where our Foundation program starts. Your coach will guide you through fundamental movement patterns, build confidence under load, and set the groundwork for long-term progress. Starting from zero is never a problem.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">
           <span class="faq-qt">Do you help with recovery and injury prevention?</span>
           <span class="faq-ic">+</span>
         </button>
-        <p class="faq-a">Yes. Recovery is built into our programs, not bolted on as an afterthought. Members on Foundation, Elevate, and Peak Performance plans have access to our dedicated recovery lounge. Our coaches also build periodisation into your training to manage load and reduce injury risk across your sporting season.</p>
+        <div class="faq-body"><div class="faq-body-inner"><p class="faq-a">Yes. Recovery is built into our programs, not bolted on as an afterthought. Members on Foundation, Elevate, and Peak Performance plans have access to our dedicated recovery lounge. Our coaches also build periodisation into your training to manage load and reduce injury risk.</p></div></div>
       </div>
     </div>
   </div>
@@ -654,8 +773,10 @@
   <div class="fcta-bg"></div>
   <div class="fcta-ov"></div>
   <div class="wrap fcta-c">
-    <h2>Ready to Achieve Your Goals?</h2>
-    <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Book Now</a>
+    <h2 class="reveal">Ready to Achieve Your Goals?</h2>
+    <div class="reveal" data-d="1">
+      <a href="https://myaccount.clubfit.net.au/prospect-inquiry?code=ELITEATHLETICDEVELOPMENT&accountId=2" class="btn btn-gold" target="_blank" rel="noopener">Book Now</a>
+    </div>
   </div>
 </section>
 
@@ -663,8 +784,8 @@
 <footer>
   <div class="wrap">
     <div class="ft-top">
-      <div class="ft-brand">
-        <a href="#"><div class="ft-logo"><img src="uploads/updated%20logo%20white%20.png" alt="NLPSC"></div></a>
+      <div class="ft-brand reveal">
+        <a href="#"><div class="ft-logo"><img src="uploads/updated%20logo.png" alt="NLPSC"></div></a>
         <p class="ft-tag">Empowering young athletes through positive training relationships that build both champions and character.</p>
         <div class="ft-contact">
           <span><strong>Ph</strong><a href="tel:0413901454">0413 901 454</a></span>
@@ -672,7 +793,7 @@
           <span><strong>Address</strong><a href="https://www.google.com/maps/place/36+Radius+Lp,+Bayswater+WA+6053/data=!4m2!3m1!1s0x2a32ba13f34cf5fb:0x6b57127199b17ef6?sa=X&ved=1t:242&ictx=111" target="_blank" rel="noopener">36 Radius Loop, Bayswater WA 6053</a></span>
         </div>
       </div>
-      <div>
+      <div class="reveal" data-d="1">
         <div class="ft-head">Navigation</div>
         <ul class="ft-links">
           <li><a href="#features">Features</a></li>
@@ -682,7 +803,7 @@
           <li><a href="#faq">FAQ</a></li>
         </ul>
       </div>
-      <div>
+      <div class="reveal" data-d="2">
         <div class="ft-head">Socials</div>
         <ul class="ft-links">
           <li><a href="https://www.instagram.com/nextlevelperformance_sc/" target="_blank" rel="noopener">Instagram</a></li>
@@ -698,13 +819,55 @@
 </footer>
 
 <script>
-  // Nav scroll
+  // ── scroll progress bar ──
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (window.scrollY / total * 100) + '%';
+  }
+
+  // ── nav scroll ──
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('on', window.scrollY > 50);
+    updateProgress();
   }, { passive: true });
 
-  // Tabs
+  // ── hero parallax ──
+  const heroBg = document.getElementById('hero-bg');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY < window.innerHeight) {
+      heroBg.style.transform = 'translateY(' + (window.scrollY * 0.35) + 'px)';
+    }
+  }, { passive: true });
+
+  // ── scroll reveal ──
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── mobile nav ──
+  const ham = document.getElementById('nav-ham');
+  const mob = document.getElementById('nav-mobile');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-mob-link').forEach(a => {
+    a.addEventListener('click', () => {
+      ham.classList.remove('open');
+      mob.classList.remove('open');
+    });
+  });
+
+  // ── tabs ──
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const t = btn.dataset.tab;
@@ -715,7 +878,7 @@
     });
   });
 
-  // FAQ accordion
+  // ── FAQ smooth accordion ──
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
       const item = btn.closest('.faq-item');
@@ -725,7 +888,7 @@
     });
   });
 
-  // Pricing toggle
+  // ── pricing toggle ──
   const sw = document.getElementById('billing-sw');
   const grid = document.getElementById('price-grid');
   const lblWk = document.getElementById('lbl-wk');
